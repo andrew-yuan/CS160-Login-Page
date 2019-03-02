@@ -55,7 +55,7 @@ h1{
 	margin-bottom: 15px;
 }
 
-.loginbox input[type="text"], input[type="password"]
+.loginbox input[type="text"], .loginbox input[type="password"]
 {
 	border: none;
 	border-bottom: 1px solid #fff;
@@ -138,7 +138,7 @@ hr{
 	cursor: pointer;
 }
 
-input.signupbox[type="text"], input.signupbox[type="password"]
+.signupbox input[type="text"], .signupbox input[type="password"]
 {
 	width: 100%;
 	padding: 15px;
