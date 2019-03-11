@@ -23,7 +23,7 @@
 	text-align: left;
 	text-decoration: none;
 	display: inline-block;
-	font-size: 16px;
+	font-size: 14px;
 }
 
 
@@ -32,9 +32,57 @@
 	background-color: #B22222; /* Green */
 	border: none;
 	color: white;
+	margin-bottom: 50px;
+	margin-right: 50px;
 	padding: 15px 32px;
 	text-align: right;
 	text-decoration: none;
 	display: inline-block;
 	font-size: 16px;
+}
+
+.list-group{
+	margin-top: 50px;
+}
+
+.list-group-item {
+	display: list-item;
+}
+
+
+#map {
+	height: 65%;
+	margin-left: 20px;
+	margin-bottom:100px;
+}
+
+/* Optional: Makes the sample page fill the window. */
+html, body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+#right-panel {
+	font-family: 'Roboto','sans-serif';
+	line-height: 30px;
+	padding-left: 10px;
+}
+
+#right-panel select, #right-panel input {
+	font-size: 12px;
+}
+
+#right-panel select {
+	width: 100%;
+}
+
+#right-panel i {
+	font-size: 12px;
+}
+#right-panel {
+	height: 100%;
+	float: right;
+	width: 390px;
+	overflow: auto;
 }

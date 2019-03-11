@@ -1,17 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Login Page</title>
+	<title>Driver Page</title>
 
-		<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+	<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+
 	
-		<!-- Bootstrap CDN -->
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+	<!-- Bootstrap CDN -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 
-		<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
 
@@ -21,18 +23,138 @@
 	</div>
 
 	<div class = "driverinfo">
-		<h3>Driver name: Bob</h3>
+		<h4>Driver name: Bob</h4>
 		<!-- Driver info stuff here -->
 	</div>
 
-	<a href="#" class = "startbutton"> Start Delivery </a>
-
-
-	<!--
-	<div class = "finishbutton">
-		<button type="button" class="btn btn-success">Start Delivery</button>
+	<div id = "driveraction1">
+		<button onclick="deliver()" class = "startbutton"> Start Delivery </button>
 	</div>
-	-->
+
+
+
+	<div id = "driveraction2" class ="container" style = "display:none">
+		<h3> Order of Delivery Addresses </h3>
+		<ol class = "list-group">
+			<!-- START location: Warehouse -->
+			<li class = "list-group-item">1 Washington Sq, San Jose, CA 95192</li>
+
+			<li class = "list-group-item">500 El Camino Real, Santa Clara, CA 95053</li>
+			<li class = "list-group-item">135 W San Carlos St, San Jose, CA 95113</li>
+			<li class = "list-group-item">1701 Airport Blvd, San Jose, CA 95110</li>
+
+			<!-- END location: Warehouse -->
+			<li class = "list-group-item">1 Washington Sq, San Jose, CA 95192</li>
+
+		</ol>
+		
+		<button class = "finishbutton"> Finish Delivery </button>
+
+	</div>
+	
+	<div id="right-panel"></div>
+	<div id="map"></div>
+
+
+	
+	<script>
+		var addresses = [
+			['SJSU (start)', 37.335341, -121.881136],
+			['Santa Clara University', 37.350208, -121.940645],
+			['San Jose Civic Center', 37.330918, -121.889694],
+			['SJC Airport', 37.366085, -121.922597],
+			['SJSU (end)', 37.335341, -121.881136],
+		];
+
+
+		function deliver() {
+			var addressaction = document.getElementById('driveraction2')
+			var startaction = document.getElementById('driveraction1')
+
+			addressaction.style.display = "block"
+			startaction.style.display = "none"
+		}
+
+
+		function initMap() {
+			//delete later
+			
+			var sanjose = new google.maps.LatLng(37.344139, -121.892231);
+			var santaclara = new google.maps.LatLng(37.349889, -121.939009);
+
+			var directionsService = new google.maps.DirectionsService();
+			var directionsDisplay = new google.maps.DirectionsRenderer();
+			var map = new google.maps.Map(document.getElementById('map'), {
+				zoom: 15,
+				center: {lat:37.31, lng:-121.98},
+			});
+			directionsDisplay.setMap(map);
+			directionsDisplay.setPanel(document.getElementById('right-panel'));
+
+			calculateAndDisplayRoute(directionsService, directionsDisplay, addresses);
+
+          	// auto center map fitting all markers on screen
+          	// none of these are working yet lmao
+          	var bounds = new google.maps.LatLngBounds();
+          	bounds.extend(santaclara);
+          	bounds.extend(sanjose);
+          	map.fitBounds(bounds);
+          	google.maps.event.trigger(map, 'resize');
+          }
+
+          function calculateAndDisplayRoute(directionsService, directionsDisplay) {
+
+          	var marker;
+          	// create request for DirectionsService
+          	var request = {
+          		waypoints: [],
+          		optimizeWaypoints: true,
+				travelMode: 'DRIVING'
+			};
+
+			// process array of addresses
+			for(var i = 0; i < addresses.length; i++)
+			{
+				marker = new google.maps.Marker({
+					position: new google.maps.LatLng(addresses[i][1], addresses[i][2]),
+				});
+
+				google.maps.event.addListener(marker, 'click', (function(marker, i) {
+					return function() {
+						infowindow.setContent(addresses[i][0]);
+						infowindow.open(map, marker);
+					}
+				})(marker, i));
+
+				// set origin, destination, and waypoint array
+				if (i == 0) request.origin = marker.getPosition();
+				else if (i == addresses.length - 1) request.destination = marker.getPosition();
+				else {
+					request.waypoints.push({
+						location: marker.getPosition(),
+						stopover: true
+					});
+				}
+			}
+
+					
+			directionsService.route(request, function(result, status) {
+				if (status == google.maps.DirectionsStatus.OK) 
+				{
+      				//directionsDisplay.setPanel(document.getElementById('result'));
+					directionsDisplay.setDirections(result);
+				}
+				else
+				{
+					window.alert('Request failed due to ' + status);
+				}
+			});
+
+		}
+	</script>
+	<script async defer 
+	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDc74IQbxDTgM54Dnk8SLb3Cr5yty2xz-c&callback=initMap">
+</script>
 
 </body>
 
